@@ -1,6 +1,6 @@
 /* File Name: TFLI2C_example.ino
  * Developer: Bud Ryerson
- * Date:      10 SEP 2020
+ * Date:      19 SEP 2020
  * Version:   0.0.1
  * Described: Arduino example sketch for the Benewake TF-Luna Lidar sensor
  *            configured for the I2C interface
@@ -16,8 +16,8 @@ int16_t  tfDist = 0 ;    // distance in centimeters
 int16_t  tfFlux = 0 ;    // signal quality in arbitrary units
 int16_t  tfTemp = 0 ;    // device chip temperature in Celsius
 int16_t  tfAddr = 0x10;  // I2C device address
-uint16_t tfFrame = 50;   // two byte frame rate
-uint8_t  tfVer[3] = { 0,0,0};   // three byte version number
+uint16_t tfFrame = 50;   // frame rate
+uint8_t  tfVer[3] = { 0,0,0};   // version number
 
 
 void exampleCommands( uint8_t adr)
@@ -66,7 +66,7 @@ void setup()
     Serial.begin( 115200);
     Wire.begin();  // Initalize Wire library
 
-    Serial.println( "TFLI2C example code: 18 Sep 2020");
+    Serial.println( "TFLI2C example code: 19 Sep 2020");
 
     exampleCommands( tfAddr);  //  execute sample commands above
 }
@@ -80,6 +80,11 @@ void loop()
         Serial.print(tfDist);
         Serial.print(" | Flux: ");     // ...print quality
         Serial.print(tfFlux);
+
+        // Convert temperature from hundreths
+        // of a degree to a whole number
+        temp = int16_t( temp / 100);
+
         Serial.print(" | Temp: ");     // ...print temperature
         Serial.println( tfTemp);
     }
