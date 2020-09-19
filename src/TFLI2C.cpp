@@ -7,10 +7,7 @@
  *
  * Default settings for the TF-Luna are:
  *    0x10  -  slave device address
- *    400kHz - bus clock speed
  *    100Hz  - data frame-rate
- *    Centimeter - distance measurement format
- *    Celsius - temperature measurement scale
  *
  *  There are is one important function: 'getData'.
  *  There are several explicit commands
@@ -18,40 +15,14 @@
  *  getData( dist, flux, temp, addr)
  *  Reads the disance measured, return signal strenght and temperature of the chip.
  *  PARAMETERS  - dist : uint16_t : distance measured by the device, in cm.
- *              - flux : uint16_t : confidence about the distance measured.
-                If the confidence value is too low, an error will occur.
+ *              - flux : uint16_t : signal strength, quality or confidence
+                  If the flux value is too low, an error will occur.
                 - temp : uint16_t : temperature of the chip in 0.01 degrees C
                 - addr : unsigned 8 bits : address of slave device.
  *    RETURN   If true, no error occured.
                If false, the error is defined by a status code, which can be
-               displayed using 'printReply()' function.
+               displayed using 'printFrame()' function.
  * NOTE : If you only want to read distance, use getData( dist, addr)
- *
- *  If the function completes without error it returns 'True' and sets
- *  a public one-byte 'tfStatus' code to zero.  Otherwise it returns 'False'
- *  and sets the 'tfStatus' code to a library defined error code.
- *  The error status can be monitored using the function 'printReply()'
- *
- *  NOTE: By default the I2C device address is set to 0x10. If you need
- *  to address multiple devices or need to change the default address for
- *  any reason, your code must thereafter include an unsigned, 8-bit
- *  'addr' value at the end of every call to 'getData()' or 'sendCommand()'.
- *
- *
- * -------- regCommand( regName, addr, operation, data) --------  *
- * This allows you to read or write into an internal register of the TF-Luna.
- * All registers you can access are defined and explained in TFLI2C.h.
- * All parameters are unsigned 8-bit values
- *    - regName : the register you're dealing with.
- *    - addr : address of slave device.
- *    - operation : commands are WRITE_REG, READ_REG and WRITE_READ_REG.
- *    - data : The data you want to write.
- * Returns a boolean bit.
- *    If true, no error occured.
- *    If false, the error is defined by a status code,
- *    which then can be displayed using 'printReply()' function.
- *
- * NOTE : If you only want to read a register's value, use sendCommand( regName, addr).
  *
  */
 
@@ -86,12 +57,13 @@ bool TFLI2C::getData( int16_t &dist, int16_t &flux, int16_t &temp, uint8_t addr)
     flux = frame[ 2] + ( frame[ 3] << 8);
     temp = frame[ 4] + ( frame[ 5] << 8);
 
+/*
     // Convert temperature from hundreths
     // of a degree to a whole number
     temp = int16_t( temp / 100);
-
-    // Convert Celsius to degrees Farenheit
-    // temp = uint8_t( temp * 9 / 5) + 32;
+    // Then convert Celsius to degrees Farenheit
+    temp = uint8_t( temp * 9 / 5) + 32;
+*/
 
     // - - Evaluate Abnormal Data Values - -
     // Signal strength <= 100
@@ -222,13 +194,13 @@ bool TFLI2C::Set_Trigger( uint8_t adr)
 {
     return( writeReg( 0x24, adr, 1));
 }
-
+//
 // = = = = = = = = = = = = = = = = = = = = = = = =
 
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//       WRITE OR READ A GIVEN REGISTER OF THE SLAVE DEVICE
+//       READ OR WRITE A GIVEN REGISTER OF THE SLAVE DEVICE
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TFLI2C::readReg( uint8_t nmbr, uint8_t addr)
 {
