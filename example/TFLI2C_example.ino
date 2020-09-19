@@ -83,7 +83,7 @@ void loop()
 
         // Convert temperature from hundreths
         // of a degree to a whole number
-        temp = int16_t( temp / 100);
+        tfTemp = int16_t( tfTemp / 100);
 
         Serial.print(" | Temp: ");     // ...print temperature
         Serial.println( tfTemp);
