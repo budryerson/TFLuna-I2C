@@ -17,7 +17,10 @@ int16_t  tfFlux = 0 ;    // signal quality in arbitrary units
 int16_t  tfTemp = 0 ;    // device chip temperature in Celsius
 int16_t  tfAddr = 0x10;  // I2C device address
 uint16_t tfFrame = 50;   // frame rate
-uint8_t  tfVer[3] = { 0,0,0};   // version number
+uint16_t tfTime = 0;
+uint8_t  tfVer[3]; // = { 0,0,0};   // version number
+uint8_t  tfCode[14];
+
 
 
 void exampleCommands( uint8_t adr)
@@ -41,7 +44,24 @@ void exampleCommands( uint8_t adr)
       Serial.print( ".");
       Serial.println( tfVer[0]);
     }
-    else tflI2C.printFrame();
+    delay(500);
+
+    Serial.print( "Get Serial Number: ");
+    if( tflI2C.Get_Prod_Code( tfCode, adr))
+    {
+      for( uint8_t i = 0; i < 14; ++i)
+      {
+        Serial.print( char( tfCode[i]));
+      }
+      Serial.println();
+    }
+    delay(500);
+
+    Serial.print( "Get Time: ");
+    if( tflI2C.Get_Time( tfTime, adr))
+    {
+      Serial.println(  tfTime);
+    }
     delay(500);
 
     Serial.print( "Set Frame Rate to: ");
@@ -49,7 +69,6 @@ void exampleCommands( uint8_t adr)
     {
       Serial.println(  tfFrame);
     }
-    else tflI2C.printFrame();
     delay(500);
     
     Serial.print( "Get Frame Rate: ");
@@ -57,7 +76,6 @@ void exampleCommands( uint8_t adr)
     {
       Serial.println(  tfFrame);  //  Read frame rate from device
     }
-    else tflI2C.printFrame();
     delay(500);
 }
 
@@ -71,6 +89,7 @@ void setup()
     exampleCommands( tfAddr);  //  execute sample commands above
 }
 
+uint8_t tfCount = 0;
 void loop()
 {
     // If data is read without error
@@ -88,6 +107,16 @@ void loop()
         Serial.print(" | Temp: ");     // ...print temperature
         Serial.println( tfTemp);
     }
-    else tflI2C.printFrame();        // else, print error status, and reply byte.
+    else tflI2C.printDataArray();        // else, print error status, and reply byte.
+
+    if( tfCount < 10) ++tfCount;
+    else
+    {
+        Serial.print( "Get Time: ");
+        tflI2C.Get_Time( tfTime, tfAddr);
+        Serial.println(  tfTime);
+        tfCount = 0;
+    }
+
     delay( 50);
 }
