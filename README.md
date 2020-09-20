@@ -3,7 +3,7 @@
 
 The **TFLuna** in I2C communication mode is unique among the Benewake family of LiDAR products in at least two ways:
 1) The communications mode (UART/U2C) is set by the voltage level of Pin #5 rather than a command; and
-2) In I2C mode, the internal device registers of the device can be addressed directly.
+2) The internal device registers of the device can be addressed directly.
 
 This library is *not compatible* with any other Benwake LiDAR device in I2C mode. In serial (UART) mode, however, the **TFLuna** is largely compatible with the **TFMini-Plus** and is therefore able to use that library.
 
