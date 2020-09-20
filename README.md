@@ -50,7 +50,7 @@ Frame-rate and most other parameter changes should be followed by a `Save_Settin
 <hr>
 
 Also included in the repository are:
-<br />&nbsp;&nbsp;&#9679;&nbsp; An Arduino sketch "TFLuna_example.ino" in the Example folder.
+<br />&nbsp;&nbsp;&#9679;&nbsp; An Arduino sketch "TFLuna_example.ino" is in the Example folder, as well as a simplified version of the example code, "TFLuna_simple.ino".
 <br />&nbsp;&nbsp;&#9679;&nbsp; Recent copies of manufacturer's Datasheet and Product Manual in Documents.
 
 All of the code for this Library is richly commented to assist with understanding and in problem solving.
