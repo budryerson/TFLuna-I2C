@@ -10,20 +10,20 @@
  *    100Hz  - data frame-rate
  *
  *  There are is one important function: 'getData'.
- *  There are several explicit commands
- *
  *  getData( dist, flux, temp, addr)
- *  Reads the disance measured, return signal strenght and temperature of the chip.
- *  PARAMETERS  - dist : uint16_t : distance measured by the device, in cm.
- *              - flux : uint16_t : signal strength, quality or confidence
-                  If the flux value is too low, an error will occur.
-                - temp : uint16_t : temperature of the chip in 0.01 degrees C
-                - addr : unsigned 8 bits : address of slave device.
- *    RETURN   If true, no error occured.
-               If false, the error is defined by a status code, which can be
-               displayed using 'printFrame()' function.
+      Reads the disance measured, return signal strength and chip temperature.
+      - dist : uint16_t : distance measured by the device, in cm.
+      - flux : uint16_t : signal strength, quality or confidence
+               If flux value too low, an error will occur.
+      - temp : uint16_t : temperature of the chip in 0.01 degrees C
+      - addr : unsigned 8 bits : address of slave device.
+      Returns true, if no error occured.
+         If false, error is defined by a status code,
+         which can be displayed using 'printFrame()' function.
+
  * NOTE : If you only want to read distance, use getData( dist, addr)
  *
+ *  There are several explicit commands
  */
 
 #include <TFLI2C.h>        //  TFLI2C library header
@@ -46,16 +46,16 @@ bool TFLI2C::getData( int16_t &dist, int16_t &flux, int16_t &temp, uint8_t addr)
     for (uint8_t reg = TFL_DIST_LO; reg <= TFL_TEMP_HI; reg++)
     {
       if( !readReg( reg, addr)) return false;
-          else frame[ reg] = regReply;
+          else dataArray[ reg] = regReply;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Step 2 - Interpret the frame data
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    dist = frame[ 0] + ( frame[ 1] << 8);
-    flux = frame[ 2] + ( frame[ 3] << 8);
-    temp = frame[ 4] + ( frame[ 5] << 8);
+    dist = dataArray[ 0] + ( dataArray[ 1] << 8);
+    flux = dataArray[ 2] + ( dataArray[ 3] << 8);
+    temp = dataArray[ 4] + ( dataArray[ 5] << 8);
 
 /*
     // Convert temperature from hundreths
@@ -96,24 +96,44 @@ bool TFLI2C::getData( int16_t &dist, uint8_t addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - -
 //              EXPLICIT COMMANDS
 // - - - - - - - - - - - - - - - - - - - - - - - - - -
-//
-//  = = = =    GET FIRMWARE VERSION   = = = =
+
+//  = =  GET DEVICE TIME (in milliseconds) = = =
+//  Pass back time as an unsigned 16-bit variable
+bool TFLI2C::Get_Time( uint16_t &tim, uint8_t adr)
+{
+    uint8_t * p_tim = (uint8_t *) &tim;
+    if( !readReg( 0x06, adr)) return false;
+        else p_tim[ 0] = regReply;  // Read into version array
+    if( !readReg( 0x07, adr)) return false;
+        else p_tim[ 1] = regReply;  // Read into version array
+    return true;
+}
+
+//  = =  GET PRODUCTION CODE (Serial Number) = = =
 // When you pass an array (ver) as a parameter to a function
 // it decays into a pointer to the first element of the array.
+bool TFLI2C::Get_Prod_Code( uint8_t * cod, uint8_t adr)
+{
+   for (uint8_t i = 0; i < 14; ++i)
+    {
+      if( !readReg( ( 0x10 + i), adr)) return false;
+        else cod[ i] = regReply;  // Read into product code array
+    }
+    return true;
+}
+
+//  = = = =    GET FIRMWARE VERSION   = = = =
 bool TFLI2C::Get_Firmware_Version( uint8_t * ver, uint8_t adr)
 {
     for (uint8_t i = 0; i < 3; ++i)
     {
       if( !readReg( ( 0x0A + i), adr)) return false;
         else ver[ i] = regReply;  // Read into version array
-
-//      if( !regCommand( ( 0x0A + i), adr)) return false;
-//          else ver[ i] = regReply;  // Read into version array
     }
     return true;
 }
 
-//  = = = = = =    SAVE SETTINGS   = = = = = =
+//  = = = = =    SAVE SETTINGS   = = = = =
 bool TFLI2C::Save_Settings( uint8_t adr)
 {
     return( writeReg( 0x20, adr, 1));
@@ -132,13 +152,13 @@ bool TFLI2C::Set_I2C_Addr( uint8_t adrNew, uint8_t adr)
     return( writeReg( 0x22, adr, adrNew));
 }
 
-//  = = = = = =   SET ENABLE   = = = = = =
+//  = = = = =   SET ENABLE   = = = = =
 bool TFLI2C::Set_Enable( uint8_t adr)
 {
     return( writeReg( 0x25, adr, 0));
 }
 
-//  = = = = = =   SET DISABLE   = = = = = =
+//  = = = = =   SET DISABLE   = = = = =
 bool TFLI2C::Set_Disable( uint8_t adr)
 {
     return( writeReg( 0x25, adr, 1));
@@ -175,14 +195,14 @@ bool TFLI2C::Hard_Reset( uint8_t adr)
 }
 
 //  = = = = = =   SET CONTINUOUS MODE   = = = = = =
-// Device will sample continuously at Frame Rate
+// Sample LiDAR chip continuously at Frame Rate
 bool TFLI2C::Set_Cont_Mode( uint8_t adr)
 {
     return( writeReg( 0x23, adr, 0));
 }
 
 //  = = = = = =   SET TRIGGER MODE   = = = = = =
-// Device will sample once when triggered
+// Device will sample only once when triggered
 bool TFLI2C::Set_Trig_Mode( uint8_t adr)
 {
     return( writeReg( 0x23, adr, 1));
@@ -196,8 +216,6 @@ bool TFLI2C::Set_Trigger( uint8_t adr)
 }
 //
 // = = = = = = = = = = = = = = = = = = = = = = = =
-
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //       READ OR WRITE A GIVEN REGISTER OF THE SLAVE DEVICE
@@ -266,43 +284,18 @@ void TFLI2C::printStatus()
 
 // Print error type and HEX values
 // of each byte in the data frame
-void TFLI2C::printFrame()
+void TFLI2C::printDataArray()
 {
     printStatus();
     // Print the Hex value of each byte of data
     Serial.print(" Data:");
-    for( uint8_t i = 0; i < TFL_FRAME_SIZE; i++)
+    for( uint8_t i = 0; i < 6; i++)
     {
       Serial.print(" ");
-      Serial.print( frame[ i] < 16 ? "0" : "");
-      Serial.print( frame[ i], HEX);
+      Serial.print( dataArray[ i] < 16 ? "0" : "");
+      Serial.print( dataArray[ i], HEX);
     }
     Serial.println();
-}
-
-
-// Print error type and HEX values of
-// each byte in the command response frame
-void TFLI2C::printReply()
-{
-    printStatus();
-    // Print the Hex value of each byte
-    for( uint8_t i = 0; i < TFL_REPLY_SIZE; i++)
-    {
-      Serial.print(" ");
-      Serial.print( reply[ i] < 16 ? "0" : "");
-      Serial.print( reply[ i], HEX);
-    }
-    Serial.println();
-}
-
-// Prints the status and the last reply recieved
-void TFLI2C::printRegReply()
-{
-    printStatus();
-    Serial.print("REPLY : ");
-    Serial.println(regReply);
-    Serial.println("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

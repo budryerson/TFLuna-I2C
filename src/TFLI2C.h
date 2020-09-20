@@ -13,12 +13,8 @@
 //      Definitions
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#define TFL_DEFAULT_ADDR     0x10   // default I2C slave address
-
-// Buffer size definitions
-#define TFL_FRAME_SIZE         6   // Size of data frame = 9 bytes
-#define TFL_REPLY_SIZE         6   // Longest command reply = 8 bytes
-//#define TFL_COMMAND_MAX        6   // Longest command = 8 bytes
+#define TFL_DEFAULT_ADDR     0x10   // default I2C address = 16
+#define TFL_DEFAULT_FPS      0x64   // default frame-rate = 100fps
 
 // - - - -   Register Names and Numbers   - - - -
 #define TFL_DIST_LO          0x00  //R Unit: cm
@@ -96,22 +92,21 @@ class TFLI2C
     TFLI2C();
     ~TFLI2C();
 
-//    uint8_t tfAddr;          // slave device I2C address
-    uint8_t tfVersion[ 3];   // three digit firmware version
-    uint8_t tfStatus;        // system error status: READY = 0
-
     // Get data
     bool getData( int16_t &dist, int16_t &flux, int16_t &temp, uint8_t addr);
     // Get data short version
     bool getData( int16_t &dist, uint8_t addr);
 
-    // Send an I2C register command
+    // Read From or Write To an I2C register
     bool readReg( uint8_t nmbr, uint8_t addr);
     bool writeReg( uint8_t nmbr, uint8_t addr, uint8_t data);
 
     // Explicit Device Commands
     bool Get_Firmware_Version( uint8_t ver[], uint8_t adr);
     bool Get_Frame_Rate( uint16_t &frm, uint8_t adr);
+    bool Get_Prod_Code( uint8_t cod[], uint8_t adr);
+    bool Get_Time( uint16_t &tim, uint8_t adr);
+
     bool Set_Frame_Rate( uint16_t &frm, uint8_t adr);
     bool Set_I2C_Addr( uint8_t adrNew, uint8_t adr);
     bool Set_Enable( uint8_t adr);
@@ -124,17 +119,13 @@ class TFLI2C
     bool Set_Trigger( uint8_t adr);  // false = continuous
 
     //  For testing purposes: print reply data and status
-    void printFrame();
-    void printReply();
-    void printRegReply();
+    void printDataArray();
 
   private:
-    uint8_t frame[ TFL_FRAME_SIZE + 1];
-    uint8_t reply[ TFL_REPLY_SIZE + 1];
 
-    void printStatus();
-
-    uint8_t regFrame[6];
+    uint8_t tfStatus;        // system error status: READY = 0
+    uint8_t dataArray[ 6];
     uint8_t regReply;
+    void printStatus();
 };
 
