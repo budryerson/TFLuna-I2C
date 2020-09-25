@@ -5,7 +5,7 @@ The **TFLuna** in I2C communication mode is unique among the Benewake family of 
 1) The communications mode (UART/U2C) is set by the voltage level of Pin #5 rather than a command; and
 2) The internal device registers of the device can be addressed directly.
 
-This library is *not compatible* with any other Benwake LiDAR device in I2C mode. In serial (UART) mode, however, the **TFLuna** is largely compatible with the **TFMini-Plus** and is therefore able to use that library.
+This library is *not compatible* with any other Benwake LiDAR device in I2C mode. In serial (UART) mode, the **TFLuna** is largely compatible with the **TFMini-Plus** and is therefore able to use that library.
 
 This library calls the Arduino standard I2C/Two-Wire Library.
 <hr />
@@ -24,20 +24,20 @@ For convenience and simplicity, a `getData( dist, addr)` function is included. T
 Other commands are explicitly defined and are broadly separated into "Set" that modify a device parameter value amd and "Get" commands that examine a parmeter value.  All commands take the form of a function name followed by one or two parameters that are always the unsigned, 8-bit I2C address of the device and sometimes a register value before the address.  If the function completes without error, it returns 'True' and sets a public, one-byte 'status' code to zero.  Otherwise, it returns 'False' and sets the 'status' to a Library defined error code.
 
 Explicit commands:<br />
-<br />&#8211;&nbsp;&nbsp; `Get_Firmware_Version` - passes back array of 3 unsigned 8-bit bytes
-<br />&#8211;&nbsp;&nbsp; `Get_Frame_Rate` - passes back unsigned 16-bit integer of the Frame-Rate in frames per second
-<br />&#8211;&nbsp;&nbsp; `Get_Prod_Code` - passes back 14 byte array of ASCII code
-<br />&#8211;&nbsp;&nbsp; `Get_Time` - passes back unsigned 16-bit integer of the device clock in milliseconds<br />
-<br />&#8211;&nbsp;&nbsp; `Set_Frame_Rate` - sends unsigned 16-bit integer of the Frame-Rate in frames per second
-<br />&#8211;&nbsp;&nbsp; `Set_I2C_Addr` - sends unsigned 8-bit byte of the new address
-<br />&#8211;&nbsp;&nbsp; `Set_Enable` - enables ouput
-<br />&#8211;&nbsp;&nbsp; `Set_Disable` - disables output
-<br />&#8211;&nbsp;&nbsp; `Soft_Reset` - resets and reboots
-<br />&#8211;&nbsp;&nbsp; `Hard_Reset` - restores factory defaults
-<br />&#8211;&nbsp;&nbsp; `Save_Settings` - saves changes
-<br />&#8211;&nbsp;&nbsp; `Set_Trig_Mode` - sets device to sample once when triggered
-<br />&#8211;&nbsp;&nbsp; `Set_Cont_Mode` - sets device to continmuously sample
-<br />&#8211;&nbsp;&nbsp; `Set_Trigger` - triggers device to sample once
+<br />&#8211;&nbsp;&nbsp; `Get_Firmware_Version` - pass back array of 3 unsigned 8-bit bytes
+<br />&#8211;&nbsp;&nbsp; `Get_Frame_Rate` - pass back unsigned 16-bit integer of Frame-Rate in frames per second
+<br />&#8211;&nbsp;&nbsp; `Get_Prod_Code` - pass back 14 byte array of ASCII coded serial number
+<br />&#8211;&nbsp;&nbsp; `Get_Time` - pass back unsigned 16-bit integer of device clock in milliseconds<br />
+<br />&#8211;&nbsp;&nbsp; `Set_Frame_Rate` - send unsigned 16-bit integer of Frame-Rate in frames per second
+<br />&#8211;&nbsp;&nbsp; `Set_I2C_Addr` - send unsigned 8-bit byte of the new address
+<br />&#8211;&nbsp;&nbsp; `Set_Enable` - turns ON device light source
+<br />&#8211;&nbsp;&nbsp; `Set_Disable` - turns OFF device light source
+<br />&#8211;&nbsp;&nbsp; `Soft_Reset` - reset, reboot and restart
+<br />&#8211;&nbsp;&nbsp; `Hard_Reset` - restore factory defaults
+<br />&#8211;&nbsp;&nbsp; `Save_Settings` - save changes
+<br />&#8211;&nbsp;&nbsp; `Set_Trig_Mode` - set device to sample once when triggered
+<br />&#8211;&nbsp;&nbsp; `Set_Cont_Mode` - set device to continmuously sample
+<br />&#8211;&nbsp;&nbsp; `Sample_Trig` - trigger device to sample once
 
 <hr>
 
@@ -51,6 +51,6 @@ Frame-rate and most other parameter changes should be followed by a `Save_Settin
 
 Also included in the repository are:
 <br />&nbsp;&nbsp;&#9679;&nbsp; An Arduino sketch "TFLuna_example.ino" is in the Example folder, as well as a simplified version of the example code, "TFLuna_simple.ino".
-<br />&nbsp;&nbsp;&#9679;&nbsp; Recent copies of manufacturer's Datasheet and Product Manual in Documents.
+<br />&nbsp;&nbsp;&#9679;&nbsp; Recent copies of manufacturer's Datasheet and Product Manual are in the Documents folder.
 
 All of the code for this Library is richly commented to assist with understanding and in problem solving.
