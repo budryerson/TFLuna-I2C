@@ -1,29 +1,34 @@
 /* File Name: TFLI2C_example.ino
  * Developer: Bud Ryerson
- * Date:      19 SEP 2020
- * Version:   0.0.1
- * Described: Arduino example sketch for the Benewake TF-Luna Lidar sensor
- *            configured for the I2C interface
+ * Date:      25 SEP 2020
+ * Version:   0.1.0
+ * Described: Arduino example sketch for the Benewake TF-Luna
+ *            Lidar sensor configured for the I2C interface
  */
  
 #include <Arduino.h>
 #include <Wire.h>
-#include <TFLI2C.h>
+#include <TFLI2C.h>  // TFLuna-I2C Library v.0.1.0
 
 TFLI2C tflI2C;
 
-int16_t  tfDist = 0 ;    // distance in centimeters
-int16_t  tfFlux = 0 ;    // signal quality in arbitrary units
-int16_t  tfTemp = 0 ;    // device chip temperature in Celsius
-int16_t  tfAddr = 0x10;  // I2C device address
-uint16_t tfFrame = 50;   // frame rate
-uint16_t tfTime = 0;
-uint8_t  tfVer[3]; // = { 0,0,0};   // version number
-uint8_t  tfCode[14];
+// program variables
+int16_t  tfAddr = TFL_DEF_ADR;    // default I2C address
+uint16_t tfFrame = TFL_DEF_FPS;   // default frame rate
+// device variables passed back by getData
+int16_t  tfDist = 0 ;   // distance in centimeters
+int16_t  tfFlux = 0 ;   // signal quality in arbitrary units
+int16_t  tfTemp = 0 ;   // temperature in 0.01 degree Celsius
+// other device variables
+uint16_t tfTime = 0;    // devie clock in milliseconds
+uint8_t  tfVer[3];      // device version number
+uint8_t  tfCode[14];    // device serial number
+// sub-loop counter for Time display
+uint8_t tfCount = 0;
 
-
-
-void exampleCommands( uint8_t adr)
+//  Several sample commands
+//  run at seetup as examples
+void sampleCommands( uint8_t adr)
 {
     Serial.print( "Device Address: ");
     Serial.println( adr);
@@ -33,7 +38,8 @@ void exampleCommands( uint8_t adr)
     {
         Serial.println( "Passed");
     }
-    delay(500);
+    else tflI2C.printStatus();  // 'printStatus()' is for troubleshooting
+    delay(500);                 //  are is not usually necessary
 
     Serial.print( "Get Firmware Version: ");
     if( tflI2C.Get_Firmware_Version( tfVer, adr))
@@ -44,6 +50,7 @@ void exampleCommands( uint8_t adr)
       Serial.print( ".");
       Serial.println( tfVer[0]);
     }
+    else tflI2C.printStatus();    
     delay(500);
 
     Serial.print( "Get Serial Number: ");
@@ -55,6 +62,7 @@ void exampleCommands( uint8_t adr)
       }
       Serial.println();
     }
+    else tflI2C.printStatus();
     delay(500);
 
     Serial.print( "Get Time: ");
@@ -62,6 +70,7 @@ void exampleCommands( uint8_t adr)
     {
       Serial.println(  tfTime);
     }
+    else tflI2C.printStatus();
     delay(500);
 
     Serial.print( "Set Frame Rate to: ");
@@ -69,6 +78,7 @@ void exampleCommands( uint8_t adr)
     {
       Serial.println(  tfFrame);
     }
+    else tflI2C.printStatus();
     delay(500);
     
     Serial.print( "Get Frame Rate: ");
@@ -76,20 +86,22 @@ void exampleCommands( uint8_t adr)
     {
       Serial.println(  tfFrame);  //  Read frame rate from device
     }
+    else tflI2C.printStatus();
     delay(500);
+
 }
 
 void setup()
 {
-    Serial.begin( 115200);
-    Wire.begin();  // Initalize Wire library
+    Serial.begin( 115200);  // Initialize Serial port
+    Wire.begin();           // Initalize Wire library
 
-    Serial.println( "TFLI2C example code: 19 Sep 2020");
+    Serial.println( "TFLI2C example code: 25 Sep 2020");
 
-    exampleCommands( tfAddr);  //  execute sample commands above
+    sampleCommands( tfAddr);  //  execute some sample commands
 }
 
-uint8_t tfCount = 0;
+
 void loop()
 {
     // If data is read without error
@@ -107,8 +119,10 @@ void loop()
         Serial.print(" | Temp: ");     // ...print temperature
         Serial.println( tfTemp);
     }
-    else tflI2C.printDataArray();        // else, print error status, and reply byte.
+    else tflI2C.printStatus();        // else, print error status
 
+    // Every ten loops this prints device time
+    // in milliseconds and resets the counter.
     if( tfCount < 10) ++tfCount;
     else
     {
