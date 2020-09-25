@@ -1,6 +1,6 @@
 #######################################
 # Syntax Coloring Map for TFLI2C
-# Date: 20200918
+# Date: 20200820
 # Note: Separate terms with TABs
 #######################################
 
@@ -17,26 +17,23 @@ version	KEYWORD1
 #######################################
 
 getData	KEYWORD2
-printStatus	KEYWORD2
-printFrame	KEYWORD2
-printReply	KEYWORD2
-getResponse	KEYWORD2
 
-#######################################
-# Explicit Device Commands
-#######################################
+Get_Time	KEYWORD2
+Get_Prod_Code	KEYWORD2
 Get_Firmware_Version	KEYWORD2
-Get_Frame_Rate	KEYWORD2
-Set_Frame_Rate	KEYWORD2
-Set_I2C_Addr	KEYWORD2
-Set_Enable	KEYWORD2
-Set_Disable	KEYWORD2
-Soft_Reset	KEYWORD2
-Hard_Reset	KEYWORD2
 Save_Settings	KEYWORD2
+Soft_Reset	KEYWORD2
+Set_I2C_Addr	KEYWORD2
 Set_Trig_Mode	KEYWORD2
 Set_Cont_Mode	KEYWORD2
-Set_Trigger	KEYWORD2
+Sample_Trig	KEYWORD2
+Set_Enable	KEYWORD2
+Set_Disable	KEYWORD2
+Set_Frame_Rate	KEYWORD2
+Get_Frame_Rate	KEYWORD2
+Hard_Reset	KEYWORD2
+
+printStatus	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
