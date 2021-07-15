@@ -21,7 +21,7 @@ Measurement data values are passed-back in three, 16-bit, signed integer variabl
 
 For convenience and simplicity, a `getData( dist, addr)` function is included. This function passes back distance data only.
 
-Other commands are explicitly defined and are broadly separated into "Set" that modify a device parameter value amd and "Get" commands that examine a parmeter value.  All commands take the form of a function name followed by one or two parameters that are always the unsigned, 8-bit I2C address of the device and sometimes a register value before the address.  If the function completes without error, it returns 'True' and sets a public, one-byte 'status' code to zero.  Otherwise, it returns 'False' and sets the 'status' to a Library defined error code.
+Other commands are explicitly defined and are broadly separated into "Set" that modify a device parameter value and and "Get" commands that examine a parameter value.  All commands take the form of a function name followed by one or two parameters that are always the unsigned, 8-bit I2C address of the device and sometimes a register value before the address.  If the function completes without error, it returns 'True' and sets a public, one-byte 'status' code to zero.  Otherwise, it returns 'False' and sets the 'status' to a Library defined error code.
 
 Explicit commands:<br />
 <br />&#8211;&nbsp;&nbsp; `Get_Firmware_Version` - pass back array of 3 unsigned 8-bit bytes
