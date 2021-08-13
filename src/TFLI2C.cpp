@@ -6,6 +6,7 @@
               Changed some register addresses from hard to symbolic.
               Changed TFL_DEFAULT_ADDR and TFL_DEFAULT_FPS
               to TFL_DEF_ADR and TFL_DEF_FPS in the header file.
+              0.2.0 - Corrected (reversed) Enable/Disable commands
  * Described: Arduino Library for the Benewake TF-Luna Lidar sensor
               configured for the I2C interface
  *
@@ -167,13 +168,13 @@ bool TFLI2C::Set_I2C_Addr( uint8_t adrNew, uint8_t adr)
 //  = = = = =   SET ENABLE   = = = = =
 bool TFLI2C::Set_Enable( uint8_t adr)
 {
-    return( writeReg( TFL_DISABLE, adr, 0));
+    return( writeReg( TFL_DISABLE, adr, 1));
 }
 
 //  = = = = =   SET DISABLE   = = = = =
 bool TFLI2C::Set_Disable( uint8_t adr)
 {
-    return( writeReg( TFL_DISABLE, adr, 1));
+    return( writeReg( TFL_DISABLE, adr, 0));
 }
 
 //  = = = = = =    SET FRAME RATE   = = = = = =
