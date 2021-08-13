@@ -5,6 +5,7 @@
               Changed TFL_DEFAULT_ADDR and TFL_DEFAULT_FPS
               to TFL_DEF_ADDR and TFL_DEF_FPS in header file.
               Changed `printStatus` from private to public
+              0.2.0 - Corrected (reversed) Enable/Disable commands
  * Described: Arduino Library for the Benewake TF-Luna Lidar sensor
  *            configured for the I2C interface
  *
@@ -42,7 +43,7 @@
                        // Must reboot to take effect.
 #define TFL_SET_TRIG_MODE    0x23  //W/R -- 0-continuous, 1-trigger
 #define TFL_TRIGGER          0x24  //W  --  1-trigger once
-#define TFL_DISABLE          0x25  //W/R -- 0-enable, 1-disable
+#define TFL_DISABLE          0x25  //W/R -- 0-disable, 1-enable
 #define TFL_FPS_LO           0x26  //W/R -- lo byte
 #define TFL_FPS_HI           0x27  //W/R -- hi byte
 #define TFL_SET_LO_PWR       0x28  //W/R -- 0-normal, 1-low power
