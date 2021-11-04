@@ -1,7 +1,7 @@
 /* File Name: TFLI2C_simple.ino
  * Developer: Bud Ryerson
- * Date:      10 JUL 2021
- * Version:   0.1.1
+ * Date:      4 NOV 2021
+ * Version:   0.1.2
  * Described: Simplified Arduino example sketch for the Benewake
  *            TF-Luna LiDAR sensor configured for the I2C interface
  */
