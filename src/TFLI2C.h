@@ -11,6 +11,9 @@
  *
  */
 
+#ifndef __TFLI2C_H__
+#define __TFLI2C_H__
+
 #include <Arduino.h>    // Always include this. It's important.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,3 +136,4 @@ class TFLI2C
     uint8_t regReply;
 };
 
+#endif
