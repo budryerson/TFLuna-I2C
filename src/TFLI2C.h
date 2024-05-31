@@ -11,6 +11,9 @@
  *
  */
 
+#ifndef __TFLI2C_H__
+#define __TFLI2C_H__
+
 #include <Arduino.h>    // Always include this. It's important.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -126,6 +129,8 @@ class TFLI2C
     void printDataArray();
     void printStatus();
 
+    uint8_t GetStatus(){return tfStatus; }
+
   private:
 
     uint8_t tfStatus;        // system error status: READY = 0
@@ -133,3 +138,4 @@ class TFLI2C
     uint8_t regReply;
 };
 
+#endif
