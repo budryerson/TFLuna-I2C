@@ -125,8 +125,6 @@ class TFLI2C
     bool Set_Cont_Mode( uint8_t adr);
     bool Set_Trigger( uint8_t adr);  // false = continuous
 
-    int GetStatus(){ return tfStatus; }
-
     //  For testing purposes: print reply data and status
     void printDataArray();
     void printStatus();
