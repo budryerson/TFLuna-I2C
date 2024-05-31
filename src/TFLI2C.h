@@ -131,6 +131,8 @@ class TFLI2C
     void printDataArray();
     void printStatus();
 
+    uint8_t GetStatus(){return tfStatus; }
+
   private:
 
     uint8_t tfStatus;        // system error status: READY = 0
